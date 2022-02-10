@@ -9,6 +9,9 @@ const PostContainer = ({ postId }) => {
 
   useEffect(() => {
     dispatch(getPost(postId));
+    return () => {
+      console.log("clear");
+    };
   }, [postId, dispatch]);
 
   if (loading) return <div>로딩중...</div>;
