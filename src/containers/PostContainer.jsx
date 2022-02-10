@@ -4,17 +4,20 @@ import { getPost } from "../modules/posts";
 import Post from "../components/Post";
 
 const PostContainer = ({ postId }) => {
-  const { loading, data, error } = useSelector((state) => state.posts.post);
+  const { loading, data, error } = useSelector(
+    (state) => state.posts.post[postId]
+  ) || {
+    loading: false,
+    data: null,
+    error: null,
+  };
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getPost(postId));
-    return () => {
-      console.log("clear");
-    };
   }, [postId, dispatch]);
 
-  if (loading) return <div>로딩중...</div>;
+  if (loading && !data) return <div>로딩중...</div>;
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
 
