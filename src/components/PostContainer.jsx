@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getPost } from "../modules/posts";
 import Post from "./Post";
+import { useNavigate } from "react-router-dom";
 
 const PostContainer = ({ postId }) => {
   const { loading, data, error } = useSelector(
@@ -10,6 +11,7 @@ const PostContainer = ({ postId }) => {
       state.posts.post[postId] || { loading: false, data: null, error: null }
   );
   const dispath = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispath(getPost(postId));
@@ -19,7 +21,12 @@ const PostContainer = ({ postId }) => {
   if (error) return <h1>data fetching 에러</h1>;
   if (!data) return null;
 
-  return <Post post={data} />;
+  return (
+    <>
+      <button onClick={() => navigate("/")}>홈으로 이동</button>
+      <Post post={data} />
+    </>
+  );
 };
 
 export default PostContainer;
