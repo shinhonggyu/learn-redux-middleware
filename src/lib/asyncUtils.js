@@ -1,39 +1,43 @@
-// 반복되는 코드는 따로 함수화하여 리팩토링
-
-// Promise에 기반한 Thunk를 만들어주는 함수.
-
-export const createPromiseThunk = (type, promiseCreator) => {
+// Promise에 기반한 Thunk를 만들어주는 함수
+export const createPromiseTunk = (type, promiseCreator) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
   return (param) => async (dispatch) => {
     dispatch({ type, param });
+
     try {
       const payload = await promiseCreator(param);
       dispatch({ type: SUCCESS, payload });
-    } catch (e) {
-      dispatch({ type: ERROR, error: true });
+    } catch (error) {
+      // error없음
+      dispatch({ type: ERROR, payload: true });
     }
   };
 };
 
-// 리듀서에서 사용 할 수 있는 여러 유틸 함수들
-
+// 리듀서에서 사용 할 수 있는 유틸 함수들
 export const reducerUtils = {
-  initial: (initialData = null) => ({
+  // 초기 상태. 초기 data 값은 기본적으로 null 이지만
+  // 바꿀 수도 있습니다.
+  initial: (initialDate = null) => ({
     loading: false,
-    data: initialData,
+    data: initialDate,
     error: null,
   }),
+  // 로딩중 상태. prevState의 경우엔 기본값은 null 이지만
+  // 따로 값을 지정하면 null 로 바꾸지 않고 다른 값을 유지시킬 수 있습니다.
   loading: (prevState = null) => ({
     loading: true,
     data: prevState,
     error: null,
   }),
+  // 성공 상태
   success: (payload) => ({
     loading: false,
     data: payload,
     error: null,
   }),
+  // 실패 상태
   error: (error) => ({
     loading: false,
     data: null,
@@ -41,11 +45,12 @@ export const reducerUtils = {
   }),
 };
 
-// 비동기 관련 액션들을 처리하는 리듀서
-// type은 액션의 타입, key 는 상태의 key (ex: posts, post)
+// 비동기 관련 액션들을 처리하는 리듀서 리팩토링
+// type은 액션의 타입, key는 상태의 key (ex: posts, post)
 
 export const handleAsyncActions = (type, key, keepData = false) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+
   return (state, action) => {
     switch (action.type) {
       case type:
@@ -61,7 +66,7 @@ export const handleAsyncActions = (type, key, keepData = false) => {
       case ERROR:
         return {
           ...state,
-          [key]: reducerUtils.error(action.error),
+          [key]: reducerUtils.error(action.payload),
         };
       default:
         return state;
@@ -74,22 +79,18 @@ const defaultIdSelector = (param) => param;
 export const createPromiseThunkById = (
   type,
   promiseCreator,
-  // 파라미터에서 id 를 어떻게 선택 할 지 정의함수
-  // 기본 값으로는 파라미터를 그대로 id로 사용.
-  // 만약 파라미터가 { id: 1, details: true }면
-  // isSelector를 param => param.id 로 설정.
-  isSelector = defaultIdSelector
+  idSelector = defaultIdSelector
 ) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
   return (param) => async (dispatch) => {
-    const id = isSelector(param);
+    const id = idSelector(param);
     dispatch({ type, meta: id });
     try {
       const payload = await promiseCreator(param);
       dispatch({ type: SUCCESS, payload, meta: id });
-    } catch (e) {
-      dispatch({ type: ERROR, error: true, payload: e, meta: id });
+    } catch (error) {
+      dispatch({ type: ERROR, payload: true, meta: id });
     }
   };
 };
@@ -123,7 +124,7 @@ export const handleAsyncActionsById = (type, key, keepData = false) => {
           ...state,
           [key]: {
             ...state[key],
-            [id]: reducerUtils.error(action.error),
+            [id]: reducerUtils.error(action.payload),
           },
         };
       default:

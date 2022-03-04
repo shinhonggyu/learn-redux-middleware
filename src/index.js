@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import App from "./App";
+
+import rootReducer from "./modules/index";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import App from "./App";
-import rootReducer from "./modules";
 import logger from "redux-logger";
 import { composeWithDevTools } from "redux-devtools-extension";
 import ReduxThunk from "redux-thunk";

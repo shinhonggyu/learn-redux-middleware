@@ -1,9 +1,9 @@
 const Counter = ({ number, onIncrease, onDecrease }) => {
   return (
-    <div className="Counter">
+    <div>
       <h1>{number}</h1>
-      <button onClick={onIncrease}>+</button>
-      <button onClick={onDecrease}>-</button>
+      <button onClick={onIncrease}>+1</button>
+      <button onClick={onDecrease}>-1</button>
     </div>
   );
 };

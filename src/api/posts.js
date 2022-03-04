@@ -17,22 +17,16 @@ const posts = [
   },
 ];
 
-// n 밀리세컨드동안 기다리는 프로미스를 만들어주는 함수
-const sleep = (n) =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(posts);
-    }, n);
-  });
+const sleep = (n) => new Promise((resolve, reject) => setTimeout(resolve, n));
 
 // 포스트 목록을 가져오는 비동기 함수
 export const getPosts = async () => {
-  const response = await sleep(500);
-  return response;
+  await sleep(1000);
+  return posts;
 };
 
 // ID로 포스트를 조회하는 비동기 함수
 export const getPostById = async (id) => {
-  const res = await sleep(500);
-  return res.find((post) => post.id === id);
+  await sleep(1000);
+  return posts.find((item) => item.id === id);
 };

@@ -1,4 +1,4 @@
-import PostListContainer from "../containers/PostListContainer";
+import PostListContainer from "../components/PostListContainer";
 
 const PostListPage = () => {
   return <PostListContainer />;

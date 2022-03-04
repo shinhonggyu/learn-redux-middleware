@@ -1,5 +1,5 @@
-import PostPage from "./pages/PostPage";
 import PostListPage from "./pages/PostListPage";
+import PostPage from "./pages/PostPage";
 import { Routes, Route } from "react-router-dom";
 
 const App = () => {
